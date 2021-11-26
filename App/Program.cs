@@ -7,11 +7,6 @@ string connectionString = GetConnectionString();
 using (var context = new SchoolContext(connectionString, true))
 {
     var student = context.Students.Find(1L);
-
-    student.Name += "2";
-    student.Email += "2";
-
-    context.SaveChanges();  
 }
 
 string GetConnectionString()
