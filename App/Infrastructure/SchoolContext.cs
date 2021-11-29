@@ -13,7 +13,12 @@ public sealed class SchoolContext : DbContext
     public DbSet<Student> Students { get; set; }
     public DbSet<Course> Courses { get; set; }
 
-    public SchoolContext(string? connectionString = null, bool useConsoleLogger = false)
+    public SchoolContext()
+    {
+
+    }
+
+    public SchoolContext(string connectionString, bool useConsoleLogger)
     {
         _connectionString = connectionString;
         _useConsoleLogger = useConsoleLogger;
@@ -53,6 +58,8 @@ public sealed class SchoolContext : DbContext
         modelBuilder.Entity<Student>(x =>
         {
             x.ToTable("Student").HasKey(y => y.Id);
+
+            x.HasOne(x => x.FavoriteCourse).WithMany();
         });
 
         modelBuilder.Entity<Course>(x =>

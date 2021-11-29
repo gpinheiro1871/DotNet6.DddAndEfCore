@@ -6,7 +6,9 @@ string connectionString = GetConnectionString();
 
 using (var context = new SchoolContext(connectionString, true))
 {
-    var student = context.Students.Find(1L);
+    var student = await context.Students
+        .Include(x => x.FavoriteCourse)
+        .FirstOrDefaultAsync(x => x.Id.Equals(1L));
 }
 
 string GetConnectionString()
