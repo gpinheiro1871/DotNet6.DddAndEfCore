@@ -1,4 +1,5 @@
 ﻿using App.Infrastructure;
+using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -18,6 +19,8 @@ using (var context = new SchoolContext(connectionString, true))
     var course2 = context.Courses.SingleOrDefault(x => x.Id == 1L);
 
     bool coursesEqual = course == course2;
+
+    bool courseIssue = course == Course.English;
 }
 
 string GetConnectionString()
