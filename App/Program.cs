@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 
 string result = Execute(x => x.CheckStudentFavoriteCourse(1, 1));
-string result2 = Execute(x => x.AddEnrollment(1, 1, Grade.A));
+string result2 = Execute(x => x.EnrollStudent(1, 1, Grade.A));
 
 Console.WriteLine(result);
 Console.WriteLine(result2);

@@ -35,7 +35,7 @@ namespace App.Controllers
             return student.FavoriteCourse == course ? "Yes" : "No";
         }
 
-        public string AddEnrollment(long studentId, long courseId, Grade grade)
+        public string EnrollStudent(long studentId, long courseId, Grade grade)
         {
             var student = _schoolContext.Students.Find(studentId);
             if (student is null)
@@ -45,7 +45,8 @@ namespace App.Controllers
             if (course is null)
                 return "Course not found";
 
-            student.Enrollments.Add(new Enrollment(course, student, grade));
+            //student.Enrollments.Add(new Enrollment(course, student, grade));
+            student.EnrollIn(course, grade);
 
             _schoolContext.SaveChanges();
 
