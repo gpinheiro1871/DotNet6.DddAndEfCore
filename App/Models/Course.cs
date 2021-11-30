@@ -1,7 +1,8 @@
-﻿namespace App.Models;
+﻿using App.Common;
 
-public class Course
+namespace App.Models;
+
+public class Course : Entity
 {
-    public long Id { get; set; }
     public string Name { get; set; }
 }

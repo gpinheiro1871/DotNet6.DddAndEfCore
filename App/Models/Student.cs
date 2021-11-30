@@ -1,4 +1,6 @@
-﻿namespace App.Models;
+﻿using App.Common;
+
+namespace App.Models;
 
 // Lazy Loading Requirements: 
 // - install Microsoft.EntityFrameworkCore.Proxies
@@ -8,9 +10,8 @@
 // These requirements go against the separation of concerns, but
 // they are small concessions that are worth it
 
-public class Student
+public class Student : Entity
 {
-    public long Id { get; private set; }
     public string Name { get; private set; }
     public string Email { get; private set; }
     public virtual Course FavoriteCourse { get; private set; }

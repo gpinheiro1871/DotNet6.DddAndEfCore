@@ -11,17 +11,13 @@ string connectionString = GetConnectionString();
 
 using (var context = new SchoolContext(connectionString, true))
 {
-    var student = await context.Students
-        .FirstOrDefaultAsync(x => x.Id.Equals(1L));
+    var student = context.Students.Find(1L);
 
-    var course = context.Courses.Find(1L);
+    var course = student.FavoriteCourse;
 
-    var student2 = context.Students.Find(1L);
+    var course2 = context.Courses.SingleOrDefault(x => x.Id == 1L);
 
-    //var student3 = context.Students.FirstOrDefaultAsync(x => x.Id.Equals(1L)); //Too Bad!
-
-    bool referenceEquals = object.ReferenceEquals(student, student2); // True
-    bool equals2 = object.ReferenceEquals(course, student2.FavoriteCourse); // True
+    bool coursesEqual = course == course2;
 }
 
 string GetConnectionString()
