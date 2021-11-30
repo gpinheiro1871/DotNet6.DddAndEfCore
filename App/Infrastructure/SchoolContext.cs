@@ -65,6 +65,8 @@ public sealed class SchoolContext : DbContext
             x.ToTable("Student").HasKey(y => y.Id);
 
             x.HasOne(x => x.FavoriteCourse).WithMany();
+
+            x.HasMany(x => x.Enrollments).WithOne(y => y.Student);
         });
 
         modelBuilder.Entity<Course>(x =>
@@ -76,9 +78,11 @@ public sealed class SchoolContext : DbContext
         {
             x.ToTable("Enrollment").HasKey(y => y.Id);
 
-            x.HasOne<Student>().WithMany();
+            x.HasOne(y => y.Student).WithMany(y => y.Enrollments);
 
-            x.HasOne<Course>().WithMany();
+            x.HasOne(y => y.Course).WithMany();
+
+            x.Property(p => p.Grade);
         });
     }
 }

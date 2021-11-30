@@ -1,26 +1,25 @@
-﻿using App.Infrastructure;
+﻿using App.Controllers;
+using App.Infrastructure;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-string connectionString = GetConnectionString();
 
-// EF Core Identity Map Pattern Comment
-// The FirstOrDefault method will get the record from the database and write it in the cache,
-// The Find method will look for the cache before resorting to the database and then write it in the cache
-// Allways use the Find method when retrieving a single entity.
+string result = Execute(x => x.CheckStudentFavoriteCourse(1, 1));
+string result2 = Execute(x => x.AddEnrollment(1, 1, Grade.A));
 
-using (var context = new SchoolContext(connectionString, true))
+Console.WriteLine(result);
+Console.WriteLine(result2);
+
+string Execute(Func<StudentController, string> func)
 {
-    var student = context.Students.Find(1L);
+    string connectionString = GetConnectionString();
 
-    var course = student.FavoriteCourse;
-
-    var course2 = context.Courses.SingleOrDefault(x => x.Id == 1L);
-
-    bool coursesEqual = course == course2;
-
-    bool courseIssue = course == Course.English;
+    using (var context = new SchoolContext(connectionString, true))
+    {
+        var controller = new StudentController(context);
+        return func(controller);
+    }
 }
 
 string GetConnectionString()

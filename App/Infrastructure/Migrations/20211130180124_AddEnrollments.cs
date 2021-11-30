@@ -4,7 +4,7 @@
 
 namespace App.Infrastructure.Migrations
 {
-    public partial class FixEverything : Migration
+    public partial class AddEnrollments : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,8 +14,9 @@ namespace App.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CourseId = table.Column<long>(type: "INTEGER", nullable: true),
-                    StudentId = table.Column<long>(type: "INTEGER", nullable: true)
+                    Grade = table.Column<int>(type: "INTEGER", nullable: false),
+                    CourseId = table.Column<long>(type: "INTEGER", nullable: false),
+                    StudentId = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,12 +25,14 @@ namespace App.Infrastructure.Migrations
                         name: "FK_Enrollment_Course_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Course",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Enrollment_Student_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Student",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

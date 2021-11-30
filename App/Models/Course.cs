@@ -8,6 +8,8 @@ public class Course : Entity
     public static readonly Course Mathematics = new Course(2 , "Mathematics");
     public static readonly Course Chemistry = new Course(3 , "Chemistry");
 
+    public static readonly Course[] AllCourses = { English, Mathematics, Chemistry };
+
     public string Name { get; set; }
 
     protected Course()
@@ -19,5 +21,10 @@ public class Course : Entity
         : base(id)
     {
         Name = name;
+    }
+
+    public static Course FromId(long id)
+    {
+        return AllCourses.SingleOrDefault(x => x.Id == id);
     }
 }
