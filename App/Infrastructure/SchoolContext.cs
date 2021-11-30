@@ -51,6 +51,10 @@ public sealed class SchoolContext : DbContext
                 .UseLoggerFactory(loggerFactory)
                 .EnableSensitiveDataLogging();
         }
+
+        optionsBuilder.UseLazyLoadingProxies();
+
+        optionsBuilder.EnableSensitiveDataLogging(true);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

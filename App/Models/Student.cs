@@ -1,14 +1,21 @@
 ﻿namespace App.Models;
 
+// Lazy Loading Requirements: 
+// - install Microsoft.EntityFrameworkCore.Proxies
+// - non-sealed class
+// - virtual navigation properties
+// - pretected parameter-less constructor
+// These requirements go against the separation of concerns, but
+// they are small concessions that are worth it
+
 public class Student
 {
-
     public long Id { get; private set; }
     public string Name { get; private set; }
     public string Email { get; private set; }
-    public Course FavoriteCourse { get; private set; }
+    public virtual Course FavoriteCourse { get; private set; }
 
-    private Student()
+    protected Student()
     {
 
     }
