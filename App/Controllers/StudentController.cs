@@ -1,56 +1,53 @@
 ﻿using App.Infrastructure;
 using App.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using App.Repositories;
 
-namespace App.Controllers
+namespace App.Controllers;
+
+public class StudentController
 {
-    public class StudentController
+    private readonly StudentRepository _studentRepository;
+    private readonly SchoolContext _schoolContext;
+
+    public StudentController(SchoolContext schoolContext)
     {
-        private SchoolContext _schoolContext;
+        _studentRepository = new StudentRepository(schoolContext);
+        _schoolContext = schoolContext;
+    }
 
-        public StudentController(SchoolContext schoolContext)
-        {
-            _schoolContext = schoolContext;
-        }
+    // EF Core Identity Map Pattern Comment
+    // The FirstOrDefault method will get the record from the database and write it in the cache,
+    // The Find method will look for the cache before resorting to the database and then write it in the cache
+    // Allways use the Find method when retrieving a single entity.
 
-        // EF Core Identity Map Pattern Comment
-        // The FirstOrDefault method will get the record from the database and write it in the cache,
-        // The Find method will look for the cache before resorting to the database and then write it in the cache
-        // Allways use the Find method when retrieving a single entity.
+    public string CheckStudentFavoriteCourse(long studentId, long courseId)
+    {
+        var student = _studentRepository.GetById(studentId);
+        if (student is null)
+            return "Student not found";
 
-        public string CheckStudentFavoriteCourse(long studentId, long courseId)
-        {
-			var student = _schoolContext.Students.Find(studentId);
-			if (student is null)
-                return "Student not found";
+        var course = Course.FromId(courseId);
+        if (course is null)
+            return "Course not found";
 
-			var course = Course.FromId(courseId);
-            if (course is null)
-                return "Course not found";
+        return student.FavoriteCourse == course ? "Yes" : "No";
+    }
 
-            return student.FavoriteCourse == course ? "Yes" : "No";
-        }
+    public string EnrollStudent(long studentId, long courseId, Grade grade)
+    {
+        var student = _studentRepository.GetById(studentId);
+        if (student is null)
+            return "Student not found";
 
-        public string EnrollStudent(long studentId, long courseId, Grade grade)
-        {
-            var student = _schoolContext.Students.Find(studentId);
-            if (student is null)
-                return "Student not found";
+        var course = Course.FromId(courseId);
+        if (course is null)
+            return "Course not found";
 
-            var course = Course.FromId(courseId);
-            if (course is null)
-                return "Course not found";
+        //student.Enrollments.Add(new Enrollment(course, student, grade));
+        var result = student.EnrollIn(course, grade);
 
-            //student.Enrollments.Add(new Enrollment(course, student, grade));
-            student.EnrollIn(course, grade);
+        _schoolContext.SaveChanges();
 
-            _schoolContext.SaveChanges();
-
-            return "OK";
-        }
+        return result;
     }
 }

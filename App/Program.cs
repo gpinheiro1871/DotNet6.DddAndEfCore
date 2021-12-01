@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 
-string result = Execute(x => x.CheckStudentFavoriteCourse(1, 1));
+//string result = Execute(x => x.CheckStudentFavoriteCourse(1, 1));
 string result2 = Execute(x => x.EnrollStudent(1, 1, Grade.A));
 
-Console.WriteLine(result);
+//Console.WriteLine(result);
 Console.WriteLine(result2);
 
 string Execute(Func<StudentController, string> func)
