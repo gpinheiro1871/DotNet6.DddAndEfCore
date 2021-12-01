@@ -46,4 +46,13 @@ public class Student : Entity
 
         return "OK";
     }
+
+    public void Disenroll(Course course)
+    {
+        Enrollment? enrollment = _enrollments.FirstOrDefault(x => x.Course == course);
+        if (enrollment is null)
+            return;
+
+        _enrollments.Remove(enrollment);
+    }
 }
