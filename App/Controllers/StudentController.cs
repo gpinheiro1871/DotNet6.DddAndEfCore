@@ -22,11 +22,11 @@ public class StudentController
 
     public string CheckStudentFavoriteCourse(long studentId, long courseId)
     {
-        var student = _studentRepository.GetById(studentId);
+        Student? student = _studentRepository.GetById(studentId);
         if (student is null)
             return "Student not found";
 
-        var course = Course.FromId(courseId);
+        Course course = Course.FromId(courseId);
         if (course is null)
             return "Course not found";
 
@@ -35,16 +35,16 @@ public class StudentController
 
     public string EnrollStudent(long studentId, long courseId, Grade grade)
     {
-        var student = _studentRepository.GetById(studentId);
+        Student? student = _studentRepository.GetById(studentId);
         if (student is null)
             return "Student not found";
 
-        var course = Course.FromId(courseId);
+        Course course = Course.FromId(courseId);
         if (course is null)
             return "Course not found";
 
         //student.Enrollments.Add(new Enrollment(course, student, grade));
-        var result = student.EnrollIn(course, grade);
+        string result = student.EnrollIn(course, grade);
 
         _schoolContext.SaveChanges();
 
@@ -53,11 +53,11 @@ public class StudentController
 
     public string DisenrollStudent(long studentId, long courseId)
     {
-        var student = _studentRepository.GetById(studentId);
+        Student? student = _studentRepository.GetById(studentId);
         if (student is null)
             return "Student not found";
 
-        var course = Course.FromId(courseId);
+        Course course = Course.FromId(courseId);
         if (course is null)
             return "Course not found";
 
