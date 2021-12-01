@@ -67,4 +67,19 @@ public class StudentController
 
         return "OK";
     }
+
+    public string RegisterStudent(string name, string email, long favoriteCourseId)
+    {
+        Course favoriteCourse = Course.FromId(favoriteCourseId);
+        if (favoriteCourse is null)
+            return "Course not found";
+
+        var student = new Student(name, email, favoriteCourse);
+        
+        _studentRepository.Save(student);
+
+        _schoolContext.SaveChanges();
+
+        return "OK";
+    }
 }

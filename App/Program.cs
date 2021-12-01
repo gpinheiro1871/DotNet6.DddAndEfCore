@@ -8,10 +8,12 @@ using Microsoft.Extensions.Configuration;
 string result = Execute(x => x.CheckStudentFavoriteCourse(1, 1));
 string result2 = Execute(x => x.EnrollStudent(1, 1, Grade.A));
 string result3 = Execute(x => x.DisenrollStudent(1, 1));
+string result4 = Execute(x => x.RegisterStudent("Mary", "mary@gmail.com", 2));
 
 Console.WriteLine(result);
 Console.WriteLine(result2);
 Console.WriteLine(result3);
+Console.WriteLine(result4);
 
 string Execute(Func<StudentController, string> func)
 {
