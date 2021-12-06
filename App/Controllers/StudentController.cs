@@ -82,4 +82,23 @@ public class StudentController
 
         return "OK";
     }
+
+    public string EditPersonalInfo(long studentId, string name, string email, long favoriteCourseId)
+    {
+        Student? student = _studentRepository.GetById(studentId);
+        if (student is null)
+            return "Student not found";
+
+        Course favoriteCourse = Course.FromId(favoriteCourseId);
+        if (favoriteCourse is null)
+            return "Course not found";
+
+        student.Name = name;
+        student.Email = email;
+        student.FavoriteCourse = favoriteCourse;   
+
+        _schoolContext.SaveChanges();
+
+        return "OK";
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using App.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -84,5 +85,16 @@ public sealed class SchoolContext : DbContext
 
             x.Property(p => p.Grade);
         });
+    }
+
+    public override int SaveChanges()
+    {
+        //Add reference data here
+        foreach (EntityEntry<Course> course in ChangeTracker.Entries<Course>())
+        {
+            course.State = EntityState.Unchanged;
+        }
+
+        return base.SaveChanges();
     }
 }
