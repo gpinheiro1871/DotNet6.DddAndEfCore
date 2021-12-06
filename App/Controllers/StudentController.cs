@@ -69,28 +69,38 @@ public class StudentController
         return "OK";
     }
 
-    public string RegisterStudent(string name, string email, long favoriteCourseId)
+    // In a real world app, use DTO instead of accepting all these arguments separately
+    public string RegisterStudent(string firstName, string lastName, 
+        string email, long favoriteCourseId)
     {
         Course favoriteCourse = Course.FromId(favoriteCourseId);
         if (favoriteCourse is null)
             return "Course not found";
 
-        Result<Email> result = Email.Create(email);
-        if (result.IsFailure)
+        Result<Email> emailResult = Email.Create(email);
+        if (emailResult.IsFailure)
         {
-            return result.Error;
+            return emailResult.Error;
         }
 
-        //var student = new Student(name, result.Value, favoriteCourse);
-        
-        //_studentRepository.Save(student);
+        Result<Name> nameResult = Name.Create(firstName, lastName);
+        if (nameResult.IsFailure)
+        {
+            return nameResult.Error;
+        }
+
+        var student = new Student(nameResult.Value, emailResult.Value, favoriteCourse);
+
+        _studentRepository.Save(student);
 
         _schoolContext.SaveChanges();
 
         return "OK";
     }
 
-    public string EditPersonalInfo(long studentId, string name, string email, long favoriteCourseId)
+    // Use a DTO!!
+    public string EditPersonalInfo(long studentId, string firstName, 
+        string lastName, string email, long favoriteCourseId)
     {
         Student? student = _studentRepository.GetById(studentId);
         if (student is null)
@@ -100,16 +110,21 @@ public class StudentController
         if (favoriteCourse is null)
             return "Course not found";
 
-        Result<Email> result = Email.Create(email);
-        if (result.IsFailure)
+        Result<Email> emailResult = Email.Create(email);
+        if (emailResult.IsFailure)
         {
-            return result.Error;
+            return emailResult.Error;
         }
 
+        Result<Name> nameResult = Name.Create(firstName, lastName);
+        if (nameResult.IsFailure)
+        {
+            return nameResult.Error;
+        }
 
-        //student.Name = name;
-        student.Email = result.Value;
-        student.FavoriteCourse = favoriteCourse;   
+        student.Name = nameResult.Value;
+        student.Email = emailResult.Value;
+        student.FavoriteCourse = favoriteCourse;
 
         _schoolContext.SaveChanges();
 

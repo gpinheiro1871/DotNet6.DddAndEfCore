@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 //string result2 = Execute(x => x.EnrollStudent(1, 1, Grade.A));
 //string result3 = Execute(x => x.DisenrollStudent(1, 1));
 //string result4 = Execute(x => x.RegisterStudent("Mary", "mary@gmail.com", 2));
-string result5 = Execute(x => x.EditPersonalInfo(1, "mary", "mary@gmail.com", 3));
+string result5 = Execute(x => x.EditPersonalInfo(1, "mary", "lynton", "mary@gmail.com", 3));
 
 //Console.WriteLine(result);
 //Console.WriteLine(result2);
