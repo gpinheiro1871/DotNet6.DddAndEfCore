@@ -81,9 +81,9 @@ public class StudentController
             return result.Error;
         }
 
-        var student = new Student(name, result.Value, favoriteCourse);
+        //var student = new Student(name, result.Value, favoriteCourse);
         
-        _studentRepository.Save(student);
+        //_studentRepository.Save(student);
 
         _schoolContext.SaveChanges();
 
@@ -107,7 +107,7 @@ public class StudentController
         }
 
 
-        student.Name = name;
+        //student.Name = name;
         student.Email = result.Value;
         student.FavoriteCourse = favoriteCourse;   
 

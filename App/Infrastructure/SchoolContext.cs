@@ -69,6 +69,12 @@ public sealed class SchoolContext : DbContext
             x.Property(x => x.Email)
                 .HasConversion(y => y.Value, y => Email.Create(y).Value);
 
+            x.OwnsOne(y => y.Name, y =>
+            {
+                y.Property(z => z.First).HasColumnName("Firstname");
+                y.Property(z => z.Last).HasColumnName("Lastname");
+            });
+
             x.HasMany(x => x.Enrollments).WithOne(y => y.Student)
                 .Metadata.PrincipalToDependent?.SetPropertyAccessMode(PropertyAccessMode.Field); //Assign backing field manually (EFCore does this automatically)
         });
