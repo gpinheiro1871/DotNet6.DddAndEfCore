@@ -1,6 +1,7 @@
 ﻿using App.Infrastructure;
 using App.Models;
 using App.Repositories;
+using CSharpFunctionalExtensions;
 
 namespace App.Controllers;
 
@@ -74,7 +75,13 @@ public class StudentController
         if (favoriteCourse is null)
             return "Course not found";
 
-        var student = new Student(name, email, favoriteCourse);
+        Result<Email> result = Email.Create(email);
+        if (result.IsFailure)
+        {
+            return result.Error;
+        }
+
+        var student = new Student(name, result.Value, favoriteCourse);
         
         _studentRepository.Save(student);
 
@@ -93,8 +100,15 @@ public class StudentController
         if (favoriteCourse is null)
             return "Course not found";
 
+        Result<Email> result = Email.Create(email);
+        if (result.IsFailure)
+        {
+            return result.Error;
+        }
+
+
         student.Name = name;
-        student.Email = email;
+        student.Email = result.Value;
         student.FavoriteCourse = favoriteCourse;   
 
         _schoolContext.SaveChanges();

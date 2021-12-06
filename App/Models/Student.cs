@@ -13,7 +13,7 @@ namespace App.Models;
 public class Student : Entity
 {
     public string Name { get; set; }
-    public string Email { get; set; }
+    public Email Email { get; set; }
     public virtual Course FavoriteCourse { get; set; }
 
     // Encapsulation comment
@@ -26,7 +26,7 @@ public class Student : Entity
 
     }
 
-    public Student(string name, string email, Course favoriteCourse)
+    public Student(string name, Email email, Course favoriteCourse)
     {
         Name = name;
         Email = email;
