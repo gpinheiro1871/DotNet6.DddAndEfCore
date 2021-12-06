@@ -5,6 +5,8 @@ using CSharpFunctionalExtensions;
 
 namespace App.Controllers;
 
+// Its a good practice to use only one domain operation
+// per controller method
 public class StudentController
 {
     private readonly StudentRepository _studentRepository;
@@ -27,7 +29,7 @@ public class StudentController
         if (student is null)
             return "Student not found";
 
-        Course course = Course.FromId(courseId);
+        Course? course = Course.FromId(courseId);
         if (course is null)
             return "Course not found";
 
@@ -40,7 +42,7 @@ public class StudentController
         if (student is null)
             return "Student not found";
 
-        Course course = Course.FromId(courseId);
+        Course? course = Course.FromId(courseId);
         if (course is null)
             return "Course not found";
 
@@ -58,7 +60,7 @@ public class StudentController
         if (student is null)
             return "Student not found";
 
-        Course course = Course.FromId(courseId);
+        Course? course = Course.FromId(courseId);
         if (course is null)
             return "Course not found";
 
@@ -71,11 +73,13 @@ public class StudentController
 
     // In a real world app, use DTO instead of accepting all these arguments separately
     public string RegisterStudent(string firstName, string lastName, 
-        string email, long favoriteCourseId)
+        long? nameSuffixId, string email, long favoriteCourseId)
     {
-        Course favoriteCourse = Course.FromId(favoriteCourseId);
+        Course? favoriteCourse = Course.FromId(favoriteCourseId);
         if (favoriteCourse is null)
+        {
             return "Course not found";
+        }
 
         Result<Email> emailResult = Email.Create(email);
         if (emailResult.IsFailure)
@@ -83,7 +87,13 @@ public class StudentController
             return emailResult.Error;
         }
 
-        Result<Name> nameResult = Name.Create(firstName, lastName);
+        Suffix? nameSuffix = null;
+        if (nameSuffixId is not null)
+        {
+            nameSuffix = Suffix.FromId((long) nameSuffixId);
+        }
+
+        Result<Name> nameResult = Name.Create(firstName, lastName, nameSuffix);
         if (nameResult.IsFailure)
         {
             return nameResult.Error;
@@ -99,14 +109,14 @@ public class StudentController
     }
 
     // Use a DTO!!
-    public string EditPersonalInfo(long studentId, string firstName, 
-        string lastName, string email, long favoriteCourseId)
+    public string EditPersonalInfo(long studentId, string firstName,
+        string lastName, long? nameSuffixId, string email, long favoriteCourseId)
     {
         Student? student = _studentRepository.GetById(studentId);
         if (student is null)
             return "Student not found";
 
-        Course favoriteCourse = Course.FromId(favoriteCourseId);
+        Course? favoriteCourse = Course.FromId(favoriteCourseId);
         if (favoriteCourse is null)
             return "Course not found";
 
@@ -116,15 +126,19 @@ public class StudentController
             return emailResult.Error;
         }
 
-        Result<Name> nameResult = Name.Create(firstName, lastName);
+        Suffix? nameSuffix = null;
+        if (nameSuffixId is not null)
+        {
+            nameSuffix = Suffix.FromId((long)nameSuffixId);
+        }
+
+        Result<Name> nameResult = Name.Create(firstName, lastName, nameSuffix);
         if (nameResult.IsFailure)
         {
             return nameResult.Error;
         }
 
-        student.Name = nameResult.Value;
-        student.Email = emailResult.Value;
-        student.FavoriteCourse = favoriteCourse;
+        student.EditPersonalInfo(nameResult.Value, emailResult.Value, favoriteCourse);
 
         _schoolContext.SaveChanges();
 

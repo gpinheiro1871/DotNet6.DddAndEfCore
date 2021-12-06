@@ -6,19 +6,20 @@ namespace App.Models
     {
         public string First { get; }
         public string Last { get; }
-
+        public virtual Suffix? Suffix { get; }
         protected Name()
         {
 
         }
 
-        private Name(string first, string last)
+        private Name(string first, string last, Suffix? suffix)
         {
+            Suffix = suffix;
             First = first;
             Last = last;
         }
 
-        public static Result<Name> Create(string first, string last)
+        public static Result<Name> Create(string first, string last, Suffix? suffix)
         {
             if (string.IsNullOrWhiteSpace(first))
             {
@@ -43,13 +44,17 @@ namespace App.Models
                 return Result.Failure<Name>("Last name is too long");
             }
 
-            return Result.Success(new Name(first, last));
+            return Result.Success(new Name(first, last, suffix));
         }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return First;
             yield return Last;
+            if (Suffix is not null)
+            {
+                yield return Suffix;
+            }
         }
     }
 }

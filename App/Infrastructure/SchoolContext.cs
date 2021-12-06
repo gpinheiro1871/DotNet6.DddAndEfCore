@@ -8,11 +8,12 @@ namespace App.Infrastructure;
 
 public sealed class SchoolContext : DbContext
 {
+    private static readonly Type[] EnumerationTypes = { typeof(Course), typeof(Suffix) };
+
     private readonly string? _connectionString;
     private readonly bool _useConsoleLogger;
 
     public DbSet<Student> Students { get; set; }
-    public DbSet<Course> Courses { get; set; }
 
     public SchoolContext()
     {
@@ -73,10 +74,24 @@ public sealed class SchoolContext : DbContext
             {
                 y.Property(z => z.First).HasColumnName("Firstname");
                 y.Property(z => z.Last).HasColumnName("Lastname");
+
+                y.Property<long?>("NameSuffixId").HasColumnName("NameSuffixId");
+
+                y.HasOne(z => z.Suffix)
+                    .WithMany()
+                    .HasForeignKey("NameSuffixId")
+                    .IsRequired(false);
+
             });
 
             x.HasMany(x => x.Enrollments).WithOne(y => y.Student)
                 .Metadata.PrincipalToDependent?.SetPropertyAccessMode(PropertyAccessMode.Field); //Assign backing field manually (EFCore does this automatically)
+        });
+
+        modelBuilder.Entity<Suffix>(x => 
+        {
+            x.ToTable("Suffix").HasKey(y => y.Id);
+            
         });
 
         modelBuilder.Entity<Course>(x =>
@@ -98,10 +113,26 @@ public sealed class SchoolContext : DbContext
 
     public override int SaveChanges()
     {
-        //Add reference data here
-        foreach (EntityEntry<Course> course in ChangeTracker.Entries<Course>())
+        // Add reference data here
+        // This is because EFCore recognizes that the reference data state was changed (Too bad!),
+        // So we need to do this for each enumeration class in the domain
+        //foreach (EntityEntry<Course> course in ChangeTracker.Entries<Course>())
+        //{
+        //    course.State = EntityState.Unchanged;
+        //}
+
+        //foreach (EntityEntry<Suffix> suffix in ChangeTracker.Entries<Suffix>())
+        //{
+        //    suffix.State = EntityState.Unchanged;
+        //}
+
+        // Better solution:
+        IEnumerable<EntityEntry> enumerationEntries = ChangeTracker.Entries()
+            .Where(x => EnumerationTypes.Contains(x.Entity.GetType()));
+
+        foreach (EntityEntry enumerationEntry in enumerationEntries)
         {
-            course.State = EntityState.Unchanged;
+            enumerationEntry.State = EntityState.Unchanged;
         }
 
         return base.SaveChanges();

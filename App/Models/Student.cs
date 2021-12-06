@@ -12,9 +12,9 @@ namespace App.Models;
 
 public class Student : Entity
 {
-    public virtual Name Name { get; set; }
-    public Email Email { get; set; }
-    public virtual Course FavoriteCourse { get; set; }
+    public virtual Name Name { get; private set; }
+    public Email Email { get; private set; }
+    public virtual Course FavoriteCourse { get; private set; }
 
     // Encapsulation comment
     // Introduce backing field to hold the actual list of Enrollments
@@ -54,5 +54,21 @@ public class Student : Entity
             return;
 
         _enrollments.Remove(enrollment);
+    }
+
+    public void EditPersonalInfo(Name name, Email email, Course favoriteCourse)
+    {
+        //Avoid manual validations like this. Too bad!
+        if (name is null || email is null || favoriteCourse is null)
+        {
+            throw new ArgumentNullException();
+        }
+
+        // In a real world project, its better to have an abstraction dealing with validations, such as:
+        // Guard.NotNull(name, email, favoriteCourse);
+
+        Name = name;
+        Email = email;
+        FavoriteCourse = favoriteCourse;
     }
 }

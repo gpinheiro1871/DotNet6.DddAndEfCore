@@ -3,6 +3,7 @@ using System;
 using App.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Infrastructure.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20211206184344_AddSuffix")]
+    partial class AddSuffix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
@@ -133,22 +135,21 @@ namespace App.Infrastructure.Migrations
                                 .HasColumnType("TEXT")
                                 .HasColumnName("Lastname");
 
-                            b1.Property<long?>("NameSuffixId")
-                                .HasColumnType("INTEGER")
-                                .HasColumnName("NameSuffixId");
+                            b1.Property<long?>("SuffixId")
+                                .HasColumnType("INTEGER");
 
                             b1.HasKey("StudentId");
 
-                            b1.HasIndex("NameSuffixId");
+                            b1.HasIndex("SuffixId");
 
                             b1.ToTable("Student");
 
-                            b1.HasOne("App.Models.Suffix", "Suffix")
-                                .WithMany()
-                                .HasForeignKey("NameSuffixId");
-
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
+
+                            b1.HasOne("App.Models.Suffix", "Suffix")
+                                .WithMany()
+                                .HasForeignKey("SuffixId");
 
                             b1.Navigation("Suffix");
                         });

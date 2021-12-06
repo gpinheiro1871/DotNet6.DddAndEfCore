@@ -23,7 +23,7 @@ public class Course : Entity
         Name = name;
     }
 
-    public static Course FromId(long id)
+    public static Course? FromId(long id)
     {
         return AllCourses.SingleOrDefault(x => x.Id == id);
     }
