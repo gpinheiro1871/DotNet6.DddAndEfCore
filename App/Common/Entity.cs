@@ -1,7 +1,12 @@
 ﻿namespace App.Common;
 
+// TODO:
+// move all domain event logic to an AggregateRoot : Entity class
 public abstract class Entity
 {
+    private readonly List<IDomainEvent> _domainEvents = new List<IDomainEvent>();
+    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents;
+
     public long Id { get; }
 
     protected Entity()
@@ -12,6 +17,16 @@ public abstract class Entity
         : this()
     {
         Id = id;
+    }
+
+    protected void RaiseDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
     }
 
     public override bool Equals(object? obj)

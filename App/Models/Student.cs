@@ -67,6 +67,11 @@ public class Student : Entity
         // In a real world project, its better to have an abstraction dealing with validations, such as:
         // Guard.NotNull(name, email, favoriteCourse);
 
+        if (Email != email)
+        {
+            RaiseDomainEvent(new StudentEmailChangedEvent(Id, email));
+        }
+
         Name = name;
         Email = email;
         FavoriteCourse = favoriteCourse;

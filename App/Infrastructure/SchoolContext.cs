@@ -1,4 +1,5 @@
-﻿using App.Models;
+﻿using App.Common;
+using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ public sealed class SchoolContext : DbContext
 
     private readonly string? _connectionString;
     private readonly bool _useConsoleLogger;
+    private readonly EventDispatcher _eventDispatcher;
 
     public DbSet<Student> Students { get; set; }
 
@@ -20,10 +22,11 @@ public sealed class SchoolContext : DbContext
 
     }
 
-    public SchoolContext(string connectionString = null, bool useConsoleLogger = false)
+    public SchoolContext(string connectionString, bool useConsoleLogger, EventDispatcher eventDispatcher)
     {
         _connectionString = connectionString;
         _useConsoleLogger = useConsoleLogger;
+        _eventDispatcher = eventDispatcher;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -135,6 +138,23 @@ public sealed class SchoolContext : DbContext
             enumerationEntry.State = EntityState.Unchanged;
         }
 
-        return base.SaveChanges();
+        List<Entity> entities = ChangeTracker
+            .Entries()
+            .Where(x => x.Entity is Entity)
+            .Select(x => (Entity)x.Entity)
+            .ToList();
+
+        int result = base.SaveChanges();
+
+        foreach (Entity entity in entities)
+        {
+            // dispatch events
+            _eventDispatcher.Dispatch(entity.DomainEvents);
+
+            // clear all events
+            entity.ClearDomainEvents();
+        }
+
+        return result;
     }
 }
